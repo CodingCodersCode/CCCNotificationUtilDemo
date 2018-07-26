@@ -25,7 +25,7 @@ public class NotificationMessageManager {
 
     private static final int DEFAULT_NOTIFICATION_START_ID_SHOW = 35000;
 
-    private static final int DEFAULT_MAX_COUNT_TO_SHOW = 30;
+    private static final int DEFAULT_MAX_COUNT_TO_SHOW = 5;
 
     private CCCNotificationUtil mCCCNotificationUtil;
 
@@ -85,10 +85,10 @@ public class NotificationMessageManager {
                 this.mNotificationIdToUseList.addAll(Arrays.asList(notificationIdToUseArr));
             }
 
-            if (this.mNotificationIdToUseList.size() < DEFAULT_MAX_COUNT_TO_SHOW) {
+            if (this.mNotificationIdToUseList.size() <= DEFAULT_MAX_COUNT_TO_SHOW) {
                 startId = DEFAULT_NOTIFICATION_START_ID_SHOW;
                 while (true) {
-                    if (this.mNotificationIdToUseList.size() < DEFAULT_MAX_COUNT_TO_SHOW) {
+                    if (this.mNotificationIdToUseList.size() <= DEFAULT_MAX_COUNT_TO_SHOW) {
                         if (this.mNotificationIdToUseList.contains(String.valueOf(startId))) {
 
                         } else {
@@ -217,7 +217,12 @@ public class NotificationMessageManager {
     }
 
     public void notify(Context context, String title, String content, BaseNotificationDataBean notificationDataBean){
-        this.mCCCNotificationUtil.notify(context, getUniqueNotificationId(), title, content, notificationDataBean);
+
+        int idThisTime = getUniqueNotificationId();
+
+        LogUtil.printLog("e", LOG_TAG, "显示通知：id=" + idThisTime + ",title = " + title + ", content = " + content);
+
+        this.mCCCNotificationUtil.notify(context, idThisTime, title, content, notificationDataBean);
     }
 
 }
