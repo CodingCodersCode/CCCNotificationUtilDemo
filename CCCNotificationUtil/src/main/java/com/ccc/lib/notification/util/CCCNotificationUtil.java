@@ -86,6 +86,8 @@ public class CCCNotificationUtil {
     //通知分组点击的requestCode原子操作
     private AtomicInteger mNotificationGroupSummaryRequestCodeAtomic;
 
+    private Class mDestBroadcastClz;
+
     private CCCNotificationUtil() {
 
     }
@@ -94,10 +96,10 @@ public class CCCNotificationUtil {
         public static CCCNotificationUtil instance = new CCCNotificationUtil();
     }
 
-    public static CCCNotificationUtil getInstance(Context context) {
+    public static CCCNotificationUtil getInstance(Context context, Class clz) {
         CCCNotificationUtil cccNotificationUtil = CCCNotificationUtilHolder.instance;
         if (!cccNotificationUtil.hasInited) {
-            cccNotificationUtil.init(context);
+            cccNotificationUtil.init(context, clz);
         }
         return cccNotificationUtil;
     }
@@ -107,7 +109,7 @@ public class CCCNotificationUtil {
      *
      * @param context
      */
-    protected synchronized void init(Context context) {
+    protected synchronized void init(Context context, Class clz) {
         try {
             if (context == null) {
                 throw new NullPointerException("context can not be null");
@@ -120,6 +122,8 @@ public class CCCNotificationUtil {
             this.hasInited = true;
 
             this.mContext = context;
+
+            this.mDestBroadcastClz = clz;
 
             this.mNotificationManagerCompat = NotificationManagerCompat.from(this.mContext);
 
@@ -252,11 +256,12 @@ public class CCCNotificationUtil {
 //  获取通知数量
 /////////////////////////////////////////////////////////////////////////////////
 
-    protected int getActiveNotificationCountExceptGroup() {
+    public int getActiveNotificationCountExceptGroup(Context context) {
         int activeCount = 0;
         StatusBarNotification[] activeNotifications;
         String pkgNameInActiveNotification;
         NotificationManager notificationManager;
+        String appPkgName;
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -265,12 +270,15 @@ public class CCCNotificationUtil {
                 //查询当前展示的所有同志的状态列表
                 activeNotifications = notificationManager.getActiveNotifications();
 
+                //获取应用包名
+                appPkgName = context.getPackageName();
+
                 //获取当前通知栏里，
                 for (StatusBarNotification itemNotification : activeNotifications) {
 
                     pkgNameInActiveNotification = itemNotification.getPackageName();
 
-                    if (TextUtils.equals(pkgNameInActiveNotification, BuildConfig.APPLICATION_ID)) {//属于当前应用的通知
+                    if (TextUtils.equals(pkgNameInActiveNotification, appPkgName)) {//属于当前应用的通知
                         if ((DEFAULT_NOTIFICATION_GROUP_ID_UP_ANDROID_N == itemNotification.getId())) {
                             //是分组
                         } else {
@@ -315,6 +323,19 @@ public class CCCNotificationUtil {
      */
     public void notify(Context context, int notificationId, String title, String content, String channel) {
         notify(context, notificationId, title, content, null, null, channel);
+    }
+
+    /**
+     * 显示通知
+     *
+     * @param context
+     * @param notificationId
+     * @param title
+     * @param content
+     * @param notificationDataBean
+     */
+    public void notify(Context context, int notificationId, String title, String content, BaseNotificationDataBean notificationDataBean) {
+        notify(context, notificationId, title, content, notificationDataBean, DEFAULT_CHANNEL_ID);
     }
 
     /**
@@ -484,7 +505,7 @@ public class CCCNotificationUtil {
         try {
             if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) && (notificationId != DEFAULT_NOTIFICATION_GROUP_ID_UP_ANDROID_N)) {
 
-                activeNotificationCountExceptGroup = getActiveNotificationCountExceptGroup();
+                activeNotificationCountExceptGroup = getActiveNotificationCountExceptGroup(this.mContext);
 
                 if (activeNotificationCountExceptGroup >= 2) {
                     //需要显示分组
@@ -526,7 +547,7 @@ public class CCCNotificationUtil {
         Intent deleteIntent;
         Bundle dataBundle;
         try {
-            deleteIntent = new Intent(ACTION_NOTIFICATION_GROUP_CHILD_DELETE);
+            deleteIntent = new Intent(ACTION_NOTIFICATION_GROUP_CHILD_DELETE, null, this.mContext, this.mDestBroadcastClz);
 
             dataBundle = new Bundle();
             dataBundle.putParcelable(IK_NOTIFICATION_PARCELABLE_DATA, notificationDataBean);
@@ -553,7 +574,7 @@ public class CCCNotificationUtil {
         Intent contentIntent;
         Bundle dataBundle;
         try {
-            contentIntent = new Intent(ACTION_NOTIFICATION_GROUP_CHILD_CLICKED);
+            contentIntent = new Intent(ACTION_NOTIFICATION_GROUP_CHILD_CLICKED, null, this.mContext, this.mDestBroadcastClz);
 
             dataBundle = new Bundle();
             dataBundle.putByteArray(IK_NOTIFICATION_PARCELABLE_DATA, ParcelabelUtil.marshall(notificationDataBean));
@@ -579,7 +600,7 @@ public class CCCNotificationUtil {
         Intent summaryClickIntent;
         Bundle dataBundle;
         try {
-            summaryClickIntent = new Intent(ACTION_NOTIFICATION_GROUP_SUMMARY_CLICKED);
+            summaryClickIntent = new Intent(ACTION_NOTIFICATION_GROUP_SUMMARY_CLICKED, null, this.mContext, this.mDestBroadcastClz);
 
             dataBundle = new Bundle();
             dataBundle.putInt(IK_NOTIFICATION_ID, DEFAULT_NOTIFICATION_GROUP_ID_UP_ANDROID_N);

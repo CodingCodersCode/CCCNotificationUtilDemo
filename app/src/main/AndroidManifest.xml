@@ -16,6 +16,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".DetailActivity">
+
+        </activity>
+
+        <activity android:name=".MsgListActivity">
+
+        </activity>
+
+        <receiver android:name=".NotificationMessageReceiver">
+            <intent-filter>
+                <action android:name="com.ccc.lib.notification.lib.action.notification.delete"/>
+                <action android:name="com.ccc.lib.notification.lib.action.notification.clicked"/>
+                <action android:name="com.ccc.lib.notification.lib.action.notification.group.summary.clicked"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
