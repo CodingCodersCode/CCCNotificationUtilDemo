@@ -335,7 +335,7 @@ public class CCCNotificationUtil {
      * @param content
      * @param notificationDataBean
      */
-    public void notify(Context context, int notificationId, String title, String content, BaseNotificationDataBean notificationDataBean) {
+    public void notify(Context context, int notificationId, String title, String content, Parcelable notificationDataBean) {
         notify(context, notificationId, title, content, notificationDataBean, DEFAULT_CHANNEL_ID);
     }
 
@@ -349,7 +349,7 @@ public class CCCNotificationUtil {
      * @param notificationDataBean
      * @param channel
      */
-    public void notify(Context context, int notificationId, String title, String content, BaseNotificationDataBean notificationDataBean, String channel) {
+    public void notify(Context context, int notificationId, String title, String content, Parcelable notificationDataBean, String channel) {
         notify(context, notificationId, title, content, createDeletePendingIntent(notificationDataBean, notificationId), createContentPendingIntent(notificationDataBean, notificationId), channel);
     }
 
@@ -542,7 +542,7 @@ public class CCCNotificationUtil {
      * @param notificationDataBean
      * @return
      */
-    private PendingIntent createDeletePendingIntent(BaseNotificationDataBean notificationDataBean, int notificationId) {
+    private PendingIntent createDeletePendingIntent(Parcelable notificationDataBean, int notificationId) {
 
         PendingIntent pendingIntent = null;
         Intent deleteIntent;

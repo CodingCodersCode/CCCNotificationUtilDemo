@@ -2,10 +2,10 @@ package com.ccc.demo.notification.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.ccc.lib.notification.util.CCCNotificationUtil;
-import com.ccc.lib.notification.util.bean.BaseNotificationDataBean;
 import com.ccc.lib.notification.util.log.LogUtil;
 
 import java.util.Arrays;
@@ -52,7 +52,7 @@ public class NotificationMessageManager {
 
     public void init(Context context) {
 
-        if (hasInited){
+        if (hasInited) {
             return;
         }
 
@@ -161,37 +161,37 @@ public class NotificationMessageManager {
         }
     }
 
-    private synchronized void onWriteNotificationIdsToSp(String ids){
+    private synchronized void onWriteNotificationIdsToSp(String ids) {
         SharedPreferences.Editor editor;
         try {
-            synchronized (this.mSharedPreferences){
+            synchronized (this.mSharedPreferences) {
                 editor = this.mSharedPreferences.edit();
 
                 editor.putString(SPK_NOTIFICATION_ID_TO_USE, requireNonNull(ids));
 
                 editor.apply();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             LogUtil.printLog("e", LOG_TAG, "存储通知id列表发生异常，详情见异常信息", e);
         }
     }
 
-    private synchronized String onReadNotificationIdsFromSp(){
+    private synchronized String onReadNotificationIdsFromSp() {
         String ids = null;
         try {
-            synchronized (this.mSharedPreferences){
+            synchronized (this.mSharedPreferences) {
                 ids = this.mSharedPreferences.getString(SPK_NOTIFICATION_ID_TO_USE, "");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             LogUtil.printLog("e", LOG_TAG, "获取通知id列表发生异常，详情见异常信息", e);
         }
         return ids;
     }
 
-    private String requireNonNull(String origin){
-        if (TextUtils.isEmpty(origin)){
+    private String requireNonNull(String origin) {
+        if (TextUtils.isEmpty(origin)) {
             return "";
-        }else {
+        } else {
             return origin;
         }
     }
@@ -216,7 +216,7 @@ public class NotificationMessageManager {
         return Integer.valueOf(newNotificationId);
     }
 
-    public void notify(Context context, String title, String content, BaseNotificationDataBean notificationDataBean){
+    public void notify(Context context, String title, String content, Parcelable notificationDataBean) {
 
         int idThisTime = getUniqueNotificationId();
 
