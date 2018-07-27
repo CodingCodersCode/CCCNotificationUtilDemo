@@ -2,6 +2,7 @@ package com.ccc.demo.notification.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
@@ -216,13 +217,15 @@ public class NotificationMessageManager {
         return Integer.valueOf(newNotificationId);
     }
 
-    public void notify(Context context, String title, String content, Parcelable notificationDataBean) {
-
-        int idThisTime = getUniqueNotificationId();
-
-        LogUtil.printLog("e", LOG_TAG, "显示通知：id=" + idThisTime + ",title = " + title + ", content = " + content);
-
-        this.mCCCNotificationUtil.notify(context, idThisTime, title, content, notificationDataBean);
+    public void notify(Context context, String title, String content, Parcelable notificationDataBean){
+        this.mCCCNotificationUtil.notify(context,
+                getUniqueNotificationId(),
+                title,
+                content,
+                notificationDataBean,
+                context.getResources().getColor(com.ccc.lib.notification.util.R.color.color_000000),
+                this.mCCCNotificationUtil.getBitmapByDrawableResId(context, R.drawable.ic_launcher),
+                R.drawable.ic_launcher);
     }
 
 }

@@ -8,7 +8,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -18,7 +20,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 
-import com.ccc.lib.notification.util.bean.BaseNotificationDataBean;
 import com.ccc.lib.notification.util.log.LogUtil;
 import com.ccc.lib.notification.util.util.ParcelabelUtil;
 
@@ -88,6 +89,10 @@ public class CCCNotificationUtil {
     private AtomicInteger mNotificationGroupSummaryRequestCodeAtomic;
 
     private Class mDestBroadcastClz;
+
+    private int mNotificationLargeIconResId;
+
+    private int mNotificationSmallIconResId;
 
     private CCCNotificationUtil() {
 
@@ -365,12 +370,7 @@ public class CCCNotificationUtil {
      * @param channel              通知渠道
      */
     public void notify(Context context, int notificationId, String title, String content, PendingIntent deletePendingIntent, PendingIntent contentPendingIntent, String channel) {
-        int largeIconResId;
-        Bitmap bitmap;
         try {
-            largeIconResId = R.mipmap.ic_launcher;
-            bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
-
             notify(context,
                     notificationId,
                     title,
@@ -379,8 +379,8 @@ public class CCCNotificationUtil {
                     contentPendingIntent,
                     channel,
                     Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS,
-                    bitmap,
-                    largeIconResId,
+                    getBitmapByDrawableResId(this.mContext, this.mNotificationLargeIconResId),
+                    this.mNotificationSmallIconResId,
                     context.getResources().getColor(R.color.color_000000),
                     true,
                     (Build.VERSION.SDK_INT >= 16) ? Notification.PRIORITY_MAX : NotificationCompat.PRIORITY_MAX,
@@ -388,6 +388,66 @@ public class CCCNotificationUtil {
                     notificationId == DEFAULT_NOTIFICATION_GROUP_ID_UP_ANDROID_N);
         } catch (Exception e) {
             LogUtil.printLog("e", LOG_TAG, "将消息显示在通知栏发生异常，详情见异常信息", e);
+        }
+    }
+
+    public Bitmap getBitmapByDrawableResId(Context context, int drawableResId) {
+        Bitmap bitmap = null;
+        Drawable drawable;
+        Canvas canvas;
+        try {
+            drawable = context.getResources().getDrawable(drawableResId);
+
+            if (drawable != null) {
+
+                if (drawable instanceof BitmapDrawable) {
+                    return ((BitmapDrawable) drawable).getBitmap();
+                } else {
+
+                    bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                    canvas = new Canvas(bitmap);
+                    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                    drawable.draw(canvas);
+                    return bitmap;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
+    /**
+     * 显示通知
+     *
+     * @param context
+     * @param notificationId
+     * @param title
+     * @param content
+     * @param notificationDataBean
+     * @param colorArgb
+     * @param largeIcon
+     * @param smallIconResId
+     */
+    public void notify(Context context, int notificationId, String title, String content, Parcelable notificationDataBean, int colorArgb, Bitmap largeIcon, int smallIconResId) {
+        try {
+            notify(context,
+                    notificationId,
+                    title,
+                    content,
+                    createDeletePendingIntent(notificationDataBean, notificationId),
+                    createContentPendingIntent(notificationDataBean, notificationId),
+                    DEFAULT_CHANNEL_ID,
+                    Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS,
+                    largeIcon,
+                    smallIconResId,
+                    colorArgb,
+                    true,
+                    (Build.VERSION.SDK_INT >= 16) ? Notification.PRIORITY_MAX : NotificationCompat.PRIORITY_MAX,
+                    DEFAULT_CHANNEL_GROUP_ID,
+                    notificationId == DEFAULT_NOTIFICATION_GROUP_ID_UP_ANDROID_N);
+        } catch (Exception e) {
+
         }
     }
 
@@ -524,8 +584,8 @@ public class CCCNotificationUtil {
                             createGroupSummaryPendingIntent()/*null*/,
                             DEFAULT_CHANNEL_ID,
                             Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS,
-                            BitmapFactory.decodeResource(this.mContext.getResources(), R.mipmap.ic_launcher),
-                            R.mipmap.ic_launcher,
+                            getBitmapByDrawableResId(this.mContext, this.mNotificationLargeIconResId),
+                            this.mNotificationSmallIconResId,
                             this.mContext.getResources().getColor(R.color.color_000000),
                             false,
                             Notification.PRIORITY_MAX,
@@ -648,5 +708,21 @@ public class CCCNotificationUtil {
         } catch (Exception e) {
             LogUtil.printLog("e", LOG_TAG, "删除指定通知发生异常，详情见异常信息", e);
         }
+    }
+
+    public int getNotificationLargeIconResId() {
+        return mNotificationLargeIconResId;
+    }
+
+    public void setNotificationLargeIconResId(int notificationLargeIconResId) {
+        this.mNotificationLargeIconResId = notificationLargeIconResId;
+    }
+
+    public int getNotificationSmallIconResId() {
+        return mNotificationSmallIconResId;
+    }
+
+    public void setNotificationSmallIconResId(int notificationSmallIconResId) {
+        this.mNotificationSmallIconResId = notificationSmallIconResId;
     }
 }
