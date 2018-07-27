@@ -365,7 +365,12 @@ public class CCCNotificationUtil {
      * @param channel              通知渠道
      */
     public void notify(Context context, int notificationId, String title, String content, PendingIntent deletePendingIntent, PendingIntent contentPendingIntent, String channel) {
+        int largeIconResId;
+        Bitmap bitmap;
         try {
+            largeIconResId = R.mipmap.ic_launcher;
+            bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+
             notify(context,
                     notificationId,
                     title,
@@ -374,8 +379,8 @@ public class CCCNotificationUtil {
                     contentPendingIntent,
                     channel,
                     Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS,
-                    BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher),
-                    R.mipmap.ic_launcher,
+                    bitmap,
+                    largeIconResId,
                     context.getResources().getColor(R.color.color_000000),
                     true,
                     (Build.VERSION.SDK_INT >= 16) ? Notification.PRIORITY_MAX : NotificationCompat.PRIORITY_MAX,
