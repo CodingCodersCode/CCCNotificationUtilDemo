@@ -94,6 +94,8 @@ public class CCCNotificationUtil {
 
     private int mNotificationSmallIconResId;
 
+    private int mNotificationAccentColorResId;
+
     private CCCNotificationUtil() {
 
     }
@@ -381,7 +383,7 @@ public class CCCNotificationUtil {
                     Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS,
                     getBitmapByDrawableResId(this.mContext, this.mNotificationLargeIconResId),
                     this.mNotificationSmallIconResId,
-                    context.getResources().getColor(R.color.color_000000),
+                    context.getResources().getColor(this.mNotificationAccentColorResId),
                     true,
                     (Build.VERSION.SDK_INT >= 16) ? Notification.PRIORITY_MAX : NotificationCompat.PRIORITY_MAX,
                     DEFAULT_CHANNEL_GROUP_ID,
@@ -586,7 +588,7 @@ public class CCCNotificationUtil {
                             Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS,
                             getBitmapByDrawableResId(this.mContext, this.mNotificationLargeIconResId),
                             this.mNotificationSmallIconResId,
-                            this.mContext.getResources().getColor(R.color.color_000000),
+                            this.mContext.getResources().getColor(this.mNotificationAccentColorResId),
                             false,
                             Notification.PRIORITY_MAX,
                             DEFAULT_CHANNEL_GROUP_ID,
@@ -724,5 +726,13 @@ public class CCCNotificationUtil {
 
     public void setNotificationSmallIconResId(int notificationSmallIconResId) {
         this.mNotificationSmallIconResId = notificationSmallIconResId;
+    }
+
+    public int getNotificationAccentColorResId() {
+        return mNotificationAccentColorResId;
+    }
+
+    public void setNotificationAccentColorResId(int notificationAccentColorResId) {
+        this.mNotificationAccentColorResId = notificationAccentColorResId;
     }
 }

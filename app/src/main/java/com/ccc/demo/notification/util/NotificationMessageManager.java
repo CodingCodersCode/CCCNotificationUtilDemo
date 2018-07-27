@@ -58,6 +58,9 @@ public class NotificationMessageManager {
         }
 
         mCCCNotificationUtil = CCCNotificationUtil.getInstance(context, NotificationMessageReceiver.class);
+        this.mCCCNotificationUtil.setNotificationLargeIconResId(R.drawable.ic_launcher);
+        this.mCCCNotificationUtil.setNotificationSmallIconResId(R.drawable.ic_launcher);
+        this.mCCCNotificationUtil.setNotificationAccentColorResId(R.color.color_000000);
 
         this.mSharedPreferences = context.getSharedPreferences("NotificationIdToUse", Context.MODE_PRIVATE);
 
