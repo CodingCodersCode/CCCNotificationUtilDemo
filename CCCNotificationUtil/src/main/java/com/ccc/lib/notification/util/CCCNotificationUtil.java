@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
@@ -569,7 +570,7 @@ public class CCCNotificationUtil {
      * @param notificationDataBean
      * @return
      */
-    private PendingIntent createContentPendingIntent(BaseNotificationDataBean notificationDataBean, int notificationId) {
+    private PendingIntent createContentPendingIntent(Parcelable notificationDataBean, int notificationId) {
         PendingIntent pendingIntent = null;
         Intent contentIntent;
         Bundle dataBundle;
