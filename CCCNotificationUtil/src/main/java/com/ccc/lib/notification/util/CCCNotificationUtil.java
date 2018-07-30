@@ -385,7 +385,7 @@ public class CCCNotificationUtil {
                     this.mNotificationSmallIconResId,
                     context.getResources().getColor(this.mNotificationAccentColorResId),
                     true,
-                    (Build.VERSION.SDK_INT >= 16) ? Notification.PRIORITY_MAX : NotificationCompat.PRIORITY_MAX,
+                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) ? Notification.PRIORITY_MAX : NotificationCompat.PRIORITY_MAX,
                     DEFAULT_CHANNEL_GROUP_ID,
                     notificationId == DEFAULT_NOTIFICATION_GROUP_ID_UP_ANDROID_N);
         } catch (Exception e) {
@@ -445,7 +445,7 @@ public class CCCNotificationUtil {
                     smallIconResId,
                     colorArgb,
                     true,
-                    (Build.VERSION.SDK_INT >= 16) ? Notification.PRIORITY_MAX : NotificationCompat.PRIORITY_MAX,
+                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) ? Notification.PRIORITY_MAX : NotificationCompat.PRIORITY_MAX,
                     DEFAULT_CHANNEL_GROUP_ID,
                     notificationId == DEFAULT_NOTIFICATION_GROUP_ID_UP_ANDROID_N);
         } catch (Exception e) {
